@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSO — Tu negocio merece una página que venda</title>
+<meta name="description" content="Estudio creativo AI-native. Diseño, branding y sistemas digitales para pymes latinoamericanas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ──────────────────────────── */
+:root {
+  --parch:  #EDE8DF;
+  --ink:    #111110;
+  --blush:  #F2BFCA;
+  --sage:   #9DAF9B;
+  --slate:  #B8C4CE;
+  --stone:  #D8D0C4;
+  --mu:     rgba(17,17,16,.42);
+  --mu2:    rgba(17,17,16,.18);
+}
+
+/* ── RESET ───────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--parch); color: var(--ink); overflow-x: hidden; }
+
+/* ── GRAIN ───────────────────────────── */
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9000; opacity: .16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='.07'/%3E%3C/svg%3E");
+}
+
+/* ── CURSOR ──────────────────────────── */
+#cur { position:fixed; width:8px; height:8px; background:var(--blush); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .3s,height .3s,background .3s; }
+#ring { position:fixed; width:32px; height:32px; border:1px solid rgba(17,17,16,.2); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:left .14s ease,top .14s ease,width .3s,height .3s,border-color .3s; }
+
+/* ── NAV ─────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  height: 60px; display: flex; align-items: center;
+  justify-content: space-between; padding: 0 2.8rem;
+  background: rgba(237,232,223,.92); backdrop-filter: blur(20px);
+  border-bottom: .5px solid rgba(17,17,16,.08);
+}
+.n-logo { text-decoration: none; display: flex; align-items: center; gap: .75rem; flex-shrink: 0; }
+.n-logo-tagline { font-size: .62rem; letter-spacing: .06em; color: var(--ink); opacity: .38; font-weight: 400; line-height: 1; padding-left: .75rem; border-left: .5px solid rgba(17,17,16,.18); }
+.n-links { display: flex; align-items: center; gap: 1.8rem; list-style: none; }
+.n-links a { font-size: .7rem; letter-spacing: .07em; color: var(--ink); text-decoration: none; opacity: .42; transition: opacity .2s; }
+.n-links a:hover { opacity: 1; }
+.n-cta { background: var(--ink) !important; color: var(--parch) !important; opacity: 1 !important; padding: .48rem 1.3rem; border-radius: 2rem; font-size: .68rem !important; letter-spacing: .08em !important; transition: background .2s !important; }
+.n-cta:hover { background: var(--blush) !important; color: var(--ink) !important; }
+.n-ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+.n-ham span { width: 20px; height: 1.5px; background: var(--ink); display: block; transition: all .3s; }
+.mmenu { display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; z-index: 490; background: var(--parch); flex-direction: column; padding: 2.5rem 2rem; gap: 1.2rem; border-top: .5px solid var(--mu2); }
+.mmenu.open { display: flex; }
+.mmenu a { font-size: 1.1rem; color: var(--ink); text-decoration: none; padding: .6rem 0; border-bottom: .5px solid var(--mu2); }
+.mmenu .mc { background: var(--ink); color: var(--parch); text-align: center; padding: .9rem; border-radius: 2rem; border: none; margin-top: .5rem; }
+
+/* ── HERO ────────────────────────────── */
+.hero {
+  min-height: 100vh; padding-top: 60px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  position: relative; overflow: hidden;
+}
+.h-left { background: var(--ink); padding: 5rem 3rem 4rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+.h-left::before { content: ''; position: absolute; bottom: -80px; left: -80px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(242,191,202,.08) 0%, transparent 65%); pointer-events: none; }
+.h-right { background: var(--blush); padding: 5rem 3rem 4rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
+
+/* Big background letter */
+.h-wm { position: absolute; bottom: -.1em; right: -.05em; font-family: 'Playfair Display', serif; font-size: 28vw; font-weight: 700; color: rgba(17,17,16,.07); line-height: 1; pointer-events: none; letter-spacing: -.04em; }
+
+.h-logo { font-weight: 600; font-size: .85rem; letter-spacing: .28em; text-transform: uppercase; color: var(--parch); opacity: 0; animation: fu .6s .1s forwards; }
+.h-badge { display: inline-flex; align-items: center; gap: .5rem; background: rgba(237,232,223,.08); border: .5px solid rgba(237,232,223,.15); color: rgba(237,232,223,.5); border-radius: 2rem; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: .3rem .85rem; width: fit-content; opacity: 0; animation: fu .6s .2s forwards; }
+
+/* Word-by-word headline */
+.h-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 8rem); font-weight: 400; line-height: .92; letter-spacing: -.02em; color: var(--parch); }
+.h-title .w { display: inline-block; overflow: hidden; }
+.h-title .w-inner { display: block; transform: translateY(110%); }
+.h-title em { font-style: italic; color: var(--blush); }
+
+.h-sub { font-size: .88rem; line-height: 1.75; color: rgba(237,232,223,.42); font-weight: 300; max-width: 340px; opacity: 0; animation: fu .8s .9s forwards; }
+.h-btns { display: flex; gap: .75rem; flex-wrap: wrap; opacity: 0; animation: fu .8s 1s forwards; }
+.btn-parch { background: var(--parch); color: var(--ink); padding: .85rem 2rem; border-radius: 3rem; font-size: .75rem; letter-spacing: .07em; font-weight: 500; text-decoration: none; display: inline-block; transition: background .2s, transform .2s; }
+.btn-parch:hover { background: var(--blush); transform: translateY(-2px); }
+.btn-ghost-dark { border: .5px solid rgba(237,232,223,.2); color: rgba(237,232,223,.45); padding: .85rem 1.8rem; border-radius: 3rem; font-size: .75rem; letter-spacing: .07em; text-decoration: none; display: inline-block; transition: border-color .2s, color .2s; }
+.btn-ghost-dark:hover { border-color: var(--blush); color: var(--blush); }
+
+/* Right side hero */
+.h-r-top { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; opacity: 0; animation: fu .7s .3s forwards; }
+.h-r-tag { font-size: .56rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(17,17,16,.45); }
+.h-r-num { font-size: .56rem; letter-spacing: .1em; color: rgba(17,17,16,.35); }
+
+/* Image placeholder hero */
+.h-r-img { flex: 1; margin: 1.5rem 0; border-radius: 1rem; overflow: hidden; min-height: 320px; background: rgba(17,17,16,.06); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem; opacity: 0; animation: fu .9s .5s forwards; }
+.h-r-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(17,17,16,.04) 0%, rgba(17,17,16,.1) 100%); }
+.ph-ico { opacity: .2; position: relative; z-index: 1; }
+.ph-txt { font-size: .52rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(17,17,16,.28); position: relative; z-index: 1; }
+
+.h-r-bottom { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; opacity: 0; animation: fu .8s .7s forwards; }
+.h-metric { }
+.h-m-val { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--ink); line-height: 1; }
+.h-m-lbl { font-size: .54rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,16,.45); margin-top: .2rem; }
+.h-r-desc { font-size: .75rem; line-height: 1.65; color: rgba(17,17,16,.5); font-weight: 300; max-width: 200px; text-align: right; }
+
+/* ── PROOF STRIP ─────────────────────── */
+.proof { background: var(--ink); display: grid; grid-template-columns: repeat(4,1fr); }
+.proof-item { padding: 1.8rem 2rem; border-right: .5px solid rgba(237,232,223,.07); display: flex; align-items: flex-start; gap: .85rem; transition: background .3s; }
+.proof-item:last-child { border-right: none; }
+.proof-item:hover { background: rgba(242,191,202,.04); }
+.proof-icon { width: 32px; height: 32px; border-radius: .5rem; background: rgba(242,191,202,.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.proof-icon svg { opacity: .7; }
+.proof-text strong { display: block; font-size: .78rem; font-weight: 500; color: var(--parch); margin-bottom: .2rem; }
+.proof-text span { font-size: .68rem; color: rgba(237,232,223,.32); font-weight: 300; line-height: 1.5; }
+
+/* ── MARQUEE ─────────────────────────── */
+.mq { overflow: hidden; background: var(--blush); padding: .78rem 0; }
+.mq-track { display: flex; white-space: nowrap; animation: mq 22s linear infinite; }
+.mq-item { display: inline-flex; align-items: center; gap: 1rem; padding: 0 1.8rem; font-size: .68rem; letter-spacing: .1em; color: var(--ink); font-weight: 500; }
+.mq-sep { opacity: .3; }
+
+/* ── WHO ─────────────────────────────── */
+.who { display: grid; grid-template-columns: 1fr 1fr; min-height: 80vh; }
+.who-left { background: var(--parch); padding: 6rem 3rem; display: flex; flex-direction: column; justify-content: space-between; border-right: .5px solid var(--mu2); }
+.who-right { background: var(--sage); padding: 6rem 3rem; display: flex; flex-direction: column; justify-content: space-between; }
+
+.sec-lbl { font-size: .56rem; letter-spacing: .22em; text-transform: uppercase; color: var(--mu); display: flex; align-items: center; gap: .6rem; margin-bottom: 1.5rem; }
+.sec-lbl::before { content: ''; width: 1.2rem; height: .5px; background: currentColor; }
+
+.who-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem,4.5vw,5rem); font-weight: 400; line-height: .95; letter-spacing: -.02em; }
+.who-title em { font-style: italic; color: var(--blush); }
+.who-left .who-title em { color: var(--ink); }
+
+.who-body { font-size: .88rem; line-height: 1.8; color: var(--mu); font-weight: 300; max-width: 380px; margin-top: 1.5rem; }
+.who-right .who-body { color: rgba(17,17,16,.55); }
+
+.who-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+.who-tag { font-size: .6rem; letter-spacing: .08em; background: rgba(17,17,16,.07); padding: .3rem .7rem; border-radius: 2rem; color: var(--mu); }
+
+.who-img { border-radius: 1rem; overflow: hidden; height: 260px; background: rgba(17,17,16,.08); position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; margin-top: 2rem; }
+.who-img-dark { background: rgba(17,17,16,.12); }
+
+/* ── FAST / VALUE ────────────────────── */
+.fast { background: var(--ink); padding: 7rem 2.8rem; }
+.fast-inner { max-width: 1320px; margin: 0 auto; }
+.fast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+
+.fast-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 4.5rem); font-weight: 400; color: var(--parch); line-height: .95; letter-spacing: -.02em; margin-bottom: 2rem; }
+.fast-title em { font-style: italic; color: var(--blush); }
+.fast-sub { font-size: .88rem; line-height: 1.8; color: rgba(237,232,223,.38); font-weight: 300; max-width: 360px; }
+
+/* Pills */
+.pills { display: flex; flex-direction: column; gap: .6rem; margin-top: 2.5rem; }
+.pill { display: flex; align-items: flex-start; gap: 1rem; padding: 1.2rem 1.4rem; background: rgba(237,232,223,.04); border: .5px solid rgba(237,232,223,.07); border-radius: .85rem; transition: border-color .3s; }
+.pill:hover { border-color: rgba(242,191,202,.2); }
+.pill-dot { width: 28px; height: 28px; border-radius: 50%; background: rgba(242,191,202,.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: .65rem; font-weight: 600; color: var(--blush); }
+.pill-title { font-size: .82rem; font-weight: 500; color: var(--parch); margin-bottom: .2rem; }
+.pill-desc { font-size: .72rem; line-height: 1.6; color: rgba(237,232,223,.32); font-weight: 300; }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 1rem; top: 1rem; bottom: 1rem; width: .5px; background: rgba(237,232,223,.07); }
+.tl { display: flex; gap: 1.5rem; padding-bottom: 2.2rem; position: relative; }
+.tl:last-child { padding-bottom: 0; }
+.tl-dot { width: 2rem; height: 2rem; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .6rem; font-weight: 600; position: relative; z-index: 1; }
+.tl-a { background: var(--blush); color: var(--ink); }
+.tl-b { background: rgba(237,232,223,.08); color: rgba(237,232,223,.4); border: .5px solid rgba(237,232,223,.1); }
+.tl-c { background: var(--sage); color: var(--ink); }
+.tl-d { background: var(--slate); color: var(--ink); }
+.tl-day { font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(237,232,223,.22); margin-bottom: .2rem; }
+.tl-name { font-size: .88rem; font-weight: 500; color: var(--parch); margin-bottom: .2rem; }
+.tl-desc { font-size: .72rem; line-height: 1.6; color: rgba(237,232,223,.3); font-weight: 300; }
+
+/* ── SERVICES ────────────────────────── */
+.svcs { padding: 7rem 2.8rem; max-width: 1320px; margin: 0 auto; }
+.svcs-head { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: flex-end; margin-bottom: 4rem; }
+.svcs-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 4.5rem); font-weight: 400; line-height: .95; letter-spacing: -.02em; }
+.svcs-title em { font-style: italic; color: var(--blush); }
+.svcs-note { font-size: .82rem; color: var(--mu); line-height: 1.75; font-weight: 300; }
+
+/* Services — MAED-style editorial grid */
+.sg { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; border: .5px solid var(--mu2); border-radius: 1.5rem; overflow: hidden; }
+.svc { padding: 2.8rem 2.2rem; border-right: .5px solid var(--mu2); border-bottom: .5px solid var(--mu2); display: flex; flex-direction: column; gap: 1rem; background: var(--parch); transition: background .35s; position: relative; }
+.svc:hover { background: var(--stone); }
+.svc:nth-child(3n) { border-right: none; }
+.svc:nth-child(n+4) { border-bottom: none; }
+.svc.pop { background: var(--ink); }
+.svc.pop:hover { background: #1e1e1c; }
+.svc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.svc-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--mu2); line-height: 1; transition: color .3s; }
+.svc:hover .svc-num { color: var(--blush); }
+.svc.pop .svc-num { color: rgba(237,232,223,.08); }
+.svc.pop:hover .svc-num { color: var(--blush); }
+.svc-badge { font-size: .52rem; letter-spacing: .12em; text-transform: uppercase; padding: .24rem .6rem; border-radius: 2rem; }
+.sb-pop { background: rgba(242,191,202,.15); color: var(--blush); border: .5px solid rgba(242,191,202,.3); }
+.sb-sec { background: rgba(17,17,16,.06); color: var(--mu); border: .5px solid var(--mu2); }
+.svc.pop .sb-sec { background: rgba(237,232,223,.06); color: rgba(237,232,223,.3); border-color: rgba(237,232,223,.1); }
+.svc-name { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 400; line-height: 1.2; color: var(--ink); }
+.svc.pop .svc-name { color: var(--parch); }
+.svc-name em { font-style: italic; color: var(--mu); }
+.svc.pop .svc-name em { color: var(--blush); }
+.svc-line { width: 1.5rem; height: .5px; background: var(--mu2); }
+.svc.pop .svc-line { background: rgba(237,232,223,.1); }
+.svc-desc { font-size: .75rem; line-height: 1.8; color: var(--mu); font-weight: 300; }
+.svc.pop .svc-desc { color: rgba(237,232,223,.38); }
+.svc-time { font-size: .58rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mu); margin-top: auto; }
+.svc.pop .svc-time { color: rgba(237,232,223,.25); }
+
+/* ── CASES ───────────────────────────── */
+.cases { background: var(--slate); padding: 7rem 2.8rem; }
+.cases-inner { max-width: 1320px; margin: 0 auto; }
+.cases-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4rem; }
+.cases-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 4rem); font-weight: 400; line-height: .95; letter-spacing: -.02em; color: var(--ink); }
+.cases-title em { font-style: italic; color: var(--parch); }
+.cases-note { font-size: .78rem; color: rgba(17,17,16,.42); max-width: 180px; text-align: right; line-height: 1.65; font-weight: 300; }
+
+/* Big case row */
+.cases-big { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-bottom: .8rem; }
+.cases-small { display: grid; grid-template-columns: repeat(3,1fr); gap: .8rem; }
+
+.case { background: white; border-radius: 1.2rem; overflow: hidden; transition: transform .35s; }
+.case:hover { transform: translateY(-4px); }
+.case.coming { background: rgba(255,255,255,.45); border: .5px dashed rgba(17,17,16,.15); }
+
+.case-img { height: 220px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; }
+.ci-ink { background: var(--ink); }
+.ci-stone { background: var(--stone); }
+.ci-sage { background: var(--sage); }
+.ci-ph-txt { font-size: .5rem; letter-spacing: .16em; text-transform: uppercase; opacity: .25; }
+.ci-ink .ci-ph-txt { opacity: .2; color: var(--parch); }
+.ci-ph-ico { opacity: .18; }
+
+.case-body { padding: 1.8rem; }
+.case-sector { font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; color: var(--mu); margin-bottom: .5rem; }
+.case-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 400; color: var(--ink); line-height: 1.2; margin-bottom: 1rem; }
+.case-results { display: flex; gap: 1.5rem; padding-top: 1rem; border-top: .5px solid var(--mu2); }
+.cr-val { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--ink); line-height: 1; }
+.cr-lbl { font-size: .54rem; letter-spacing: .1em; text-transform: uppercase; color: var(--mu); margin-top: .18rem; }
+
+.case-coming { padding: 3rem 2rem; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: .85rem; min-height: 260px; }
+.cc-ico { width: 44px; height: 44px; border-radius: 50%; background: rgba(17,17,16,.06); display: flex; align-items: center; justify-content: center; }
+.cc-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 400; }
+.cc-sub { font-size: .72rem; color: var(--mu); font-weight: 300; line-height: 1.6; max-width: 200px; }
+.cc-link { font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink); border-bottom: .5px solid var(--mu); padding-bottom: .12rem; text-decoration: none; transition: opacity .2s; }
+.cc-link:hover { opacity: .5; }
+
+/* ── PROCESS ─────────────────────────── */
+.proc { background: var(--sage); padding: 7rem 2.8rem; }
+.proc-inner { max-width: 1320px; margin: 0 auto; }
+.proc-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5rem; }
+.proc-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 4.5rem); font-weight: 400; line-height: .95; letter-spacing: -.02em; max-width: 500px; }
+.proc-title em { font-style: italic; color: var(--parch); }
+.proc-note { font-size: .78rem; color: rgba(17,17,16,.42); max-width: 180px; text-align: right; line-height: 1.65; font-weight: 300; }
+.proc-steps { display: flex; border: .5px solid rgba(17,17,16,.1); border-radius: 1.5rem; overflow: hidden; }
+.ps { flex: 1; padding: 3rem 2rem; border-right: .5px solid rgba(17,17,16,.08); transition: background .3s; }
+.ps:last-child { border-right: none; }
+.ps:hover { background: rgba(255,255,255,.25); }
+.ps-num { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: rgba(17,17,16,.07); line-height: 1; margin-bottom: 2rem; }
+.ps-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--ink); font-weight: 400; margin-bottom: .7rem; }
+.ps-line { width: 1.5rem; height: .5px; background: rgba(17,17,16,.25); margin-bottom: .7rem; }
+.ps-desc { font-size: .72rem; line-height: 1.8; color: rgba(17,17,16,.48); font-weight: 300; }
+
+/* ── TEAM ────────────────────────────── */
+.team { background: var(--stone); padding: 7rem 2.8rem; }
+.team-inner { max-width: 1320px; margin: 0 auto; }
+.team-head { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: flex-end; margin-bottom: 4rem; }
+.team-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 4vw, 4rem); font-weight: 400; line-height: .95; letter-spacing: -.02em; }
+.team-title em { font-style: italic; color: var(--ink); }
+.team-note { font-size: .82rem; color: var(--mu); line-height: 1.75; font-weight: 300; }
+.team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.tcard { background: var(--parch); border: .5px solid rgba(17,17,16,.08); border-radius: 1.2rem; overflow: hidden; display: grid; grid-template-columns: 200px 1fr; transition: transform .35s, border-color .3s; }
+.tcard:hover { transform: translateY(-3px); border-color: rgba(17,17,16,.18); }
+.timg { background: var(--slate); min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem; position: relative; overflow: hidden; }
+.timg-2 { background: var(--sage); }
+.timg svg { opacity: .18; }
+.timg-lbl { font-size: .5rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(17,17,16,.25); }
+.tinfo { padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; }
+.trole { font-size: .54rem; letter-spacing: .18em; text-transform: uppercase; color: var(--mu); margin-bottom: .45rem; }
+.tname { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400; line-height: 1.1; margin-bottom: .7rem; }
+.tbio { font-size: .74rem; line-height: 1.75; color: var(--mu); font-weight: 300; flex: 1; }
+.ttags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: 1.2rem; }
+.ttag { font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; background: rgba(17,17,16,.07); padding: .2rem .5rem; border-radius: 2rem; color: var(--mu); }
+
+/* ── CTA ─────────────────────────────── */
+.cta { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; overflow: hidden; }
+.cta-l { background: var(--blush); padding: 7rem 3.5rem; display: flex; flex-direction: column; justify-content: center; gap: 2.5rem; }
+.cta-eye { font-size: .56rem; letter-spacing: .22em; text-transform: uppercase; color: rgba(17,17,16,.45); display: flex; align-items: center; gap: .6rem; }
+.cta-eye::before { content: ''; width: 1.2rem; height: .5px; background: rgba(17,17,16,.3); }
+.cta-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 5vw, 5.5rem); font-weight: 400; line-height: .95; letter-spacing: -.02em; color: var(--ink); }
+.cta-title em { font-style: italic; color: var(--parch); }
+.cta-sub { font-size: .88rem; color: rgba(17,17,16,.5); line-height: 1.8; font-weight: 300; max-width: 340px; }
+.cta-btns { display: flex; gap: .75rem; flex-wrap: wrap; }
+.btn-ink { background: var(--ink); color: var(--parch); padding: .9rem 2.2rem; border-radius: 3rem; font-size: .75rem; letter-spacing: .07em; font-weight: 500; text-decoration: none; display: inline-block; transition: background .2s; }
+.btn-ink:hover { background: #2a2a28; }
+.btn-ghost-blush { border: 1.5px solid rgba(17,17,16,.25); color: rgba(17,17,16,.55); padding: .9rem 1.8rem; border-radius: 3rem; font-size: .75rem; letter-spacing: .07em; text-decoration: none; display: inline-block; transition: border-color .2s, color .2s; }
+.btn-ghost-blush:hover { border-color: var(--ink); color: var(--ink); }
+.cta-contacts { display: flex; flex-direction: column; gap: .6rem; }
+.cta-row { display: flex; align-items: center; gap: .7rem; }
+.cdot { width: 4px; height: 4px; border-radius: 50%; background: var(--ink); opacity: .4; flex-shrink: 0; }
+.cta-row a { font-size: .75rem; color: rgba(17,17,16,.45); text-decoration: none; transition: color .2s; }
+.cta-row a:hover { color: var(--ink); }
+.cta-r { background: var(--ink); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; }
+.cta-r-ph { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem; }
+.cta-r-txt { font-size: .5rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(237,232,223,.18); }
+.cta-wm { position: absolute; bottom: -.1em; right: -.05em; font-family: 'Playfair Display', serif; font-size: 28vw; color: rgba(237,232,223,.04); line-height: 1; pointer-events: none; font-weight: 700; letter-spacing: -.04em; }
+
+/* ── FOOTER ──────────────────────────── */
+footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
+.fi { max-width: 1320px; margin: 0 auto; }
+.ftop { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 2.5rem; border-bottom: .5px solid rgba(237,232,223,.07); margin-bottom: 2rem; }
+.flogo { font-weight: 600; font-size: .9rem; letter-spacing: .28em; text-transform: uppercase; color: var(--parch); }
+.ftag { font-size: .58rem; letter-spacing: .07em; color: rgba(237,232,223,.18); margin-top: .35rem; }
+.fcols { display: flex; gap: 4rem; }
+.fct { font-size: .52rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(237,232,223,.2); margin-bottom: 1rem; }
+.flinks { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+.flinks a { font-size: .74rem; color: rgba(237,232,223,.35); text-decoration: none; transition: color .2s; }
+.flinks a:hover { color: var(--blush); }
+.fbot { display: flex; justify-content: space-between; align-items: center; }
+.fcp { font-size: .58rem; color: rgba(237,232,223,.15); letter-spacing: .05em; }
+.fem a { font-size: .66rem; color: var(--blush); text-decoration: none; }
+
+/* ── REVEAL ──────────────────────────── */
+.rv { opacity: 0; transform: translateY(28px); transition: opacity .9s ease, transform .9s ease; }
+.rv.in { opacity: 1; transform: none; }
+.d1 { transition-delay: .1s; } .d2 { transition-delay: .2s; } .d3 { transition-delay: .3s; } .d4 { transition-delay: .4s; }
+
+/* ── KEYFRAMES ───────────────────────── */
+@keyframes fu { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+@keyframes mq { from { transform:translateX(0); } to { transform:translateX(-50%); } }
+@keyframes wr { to { transform: translateY(0); } }
+
+/* ── MOBILE ──────────────────────────── */
+@media (max-width: 960px) {
+  nav { padding: 0 1.5rem; }
+  .n-links { display: none; }
+  .n-ham { display: flex; }
+  .hero { grid-template-columns: 1fr; }
+  .h-left { padding: 3.5rem 1.5rem 3rem; min-height: 60vh; }
+  .h-right { min-height: 50vh; padding: 3rem 1.5rem; }
+  .proof { grid-template-columns: 1fr 1fr; }
+  .proof-item { padding: 1.2rem 1.2rem; }
+  .who { grid-template-columns: 1fr; }
+  .who-left, .who-right { padding: 4rem 1.5rem; }
+  .fast { padding: 5rem 1.5rem; }
+  .fast-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .svcs { padding: 5rem 1.5rem; }
+  .svcs-head { grid-template-columns: 1fr; }
+  .sg { grid-template-columns: 1fr; }
+  .svc { border-right: none !important; }
+  .cases { padding: 5rem 1.5rem; }
+  .cases-head { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .cases-big, .cases-small { grid-template-columns: 1fr; }
+  .proc { padding: 5rem 1.5rem; }
+  .proc-head { flex-direction: column; gap: 1.5rem; }
+  .proc-note { text-align: left; }
+  .proc-steps { flex-direction: column; }
+  .ps { border-right: none; border-bottom: .5px solid rgba(17,17,16,.08); }
+  .team { padding: 5rem 1.5rem; }
+  .team-head { grid-template-columns: 1fr; }
+  .team-grid { grid-template-columns: 1fr; }
+  .tcard { grid-template-columns: 1fr; }
+  .timg { min-height: 180px; }
+  .cta { grid-template-columns: 1fr; }
+  .cta-l { padding: 5rem 1.5rem; }
+  .cta-r { min-height: 260px; }
+  footer { padding: 2.5rem 1.5rem 2rem; }
+  .ftop { flex-direction: column; gap: 2rem; }
+  .fcols { flex-wrap: wrap; gap: 2rem; }
+  .fbot { flex-direction: column; gap: .5rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="n-logo" href="#"><img src="logo.png" alt="OSO estudio de diseño" style="height:28px;width:auto;display:block"></a>
+  <ul class="n-links">
+    <li><a href="#quienes">¿A quién ayudamos?</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#resultados">Resultados</a></li>
+    <li><a href="#equipo">El equipo</a></li>
+    <li><a href="#contacto" class="n-cta">Hablemos</a></li>
+  </ul>
+  <div class="n-ham" id="ham" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mmenu" id="mmenu">
+  <a href="#quienes" onclick="toggleMenu()">¿A quién ayudamos?</a>
+  <a href="#servicios" onclick="toggleMenu()">Servicios</a>
+  <a href="#resultados" onclick="toggleMenu()">Resultados</a>
+  <a href="#equipo" onclick="toggleMenu()">El equipo</a>
+  <a href="#contacto" class="mc" onclick="toggleMenu()">Hablemos →</a>
+</div>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="h-left">
+    <div>
+
+      <div class="h-badge" style="margin-top:.75rem">Estudio creativo · Bogotá · Est. 2024</div>
+    </div>
+
+    <div style="margin: 3rem 0;">
+      <h1 class="h-title" id="htitle">
+        <span class="w"><span class="w-inner">Tu negocio</span></span><br>
+        <span class="w"><span class="w-inner">merece una</span></span><br>
+        <span class="w"><span class="w-inner">web que</span></span>
+        <span class="w"><em class="w-inner">venda.</em></span>
+      </h1>
+    </div>
+
+    <div>
+      <p class="h-sub">Diseñamos y construimos páginas web, marcas e identidades digitales para negocios latinoamericanos. Rápido, moderno y con resultados medibles.</p>
+      <div class="h-btns" style="margin-top:1.5rem">
+        <a href="#contacto" class="btn-parch">Cotización gratis</a>
+        <a href="#resultados" class="btn-ghost-dark">Ver resultados →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-right">
+    <div class="h-r-top">
+      <div class="h-r-tag">AI-Native Studio</div>
+      <div class="h-r-num">2024 ©</div>
+    </div>
+
+    <!-- REPLACE: foto editorial principal -->
+    <div class="h-r-img">
+      <svg class="ph-ico" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.4)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span class="ph-txt">[ foto principal — reemplazar ]</span>
+    </div>
+
+    <div class="h-r-bottom">
+      <div class="h-metric">
+        <div class="h-m-val">2.5×</div>
+        <div class="h-m-lbl">Más ventas en promedio</div>
+      </div>
+      <div class="h-r-desc">Tu página lista en 2 semanas. Sin tecnicismos.</div>
+    </div>
+    <div class="h-wm">O</div>
+  </div>
+</section>
+
+<!-- PROOF STRIP -->
+<div class="proof rv">
+  <div class="proof-item">
+    <div class="proof-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blush)" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+    <div class="proof-text"><strong>Lista en 2 semanas</strong><span>Sin esperar meses</span></div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blush)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+    <div class="proof-text"><strong>Usamos inteligencia artificial</strong><span>Más rápido, mejor precio</span></div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blush)" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+    <div class="proof-text"><strong>Resultados medibles</strong><span>Sabrás qué funciona</span></div>
+  </div>
+  <div class="proof-item">
+    <div class="proof-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blush)" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+    <div class="proof-text"><strong>Estándares internacionales</strong><span>Como las grandes empresas</span></div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="mq">
+  <div class="mq-track">
+    <span class="mq-item">✓ Tu página en 2 semanas <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Más clientes desde el primer mes <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Sin necesidad de saber tecnología <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Precios para pymes <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Diseño moderno y profesional <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Cotización gratis en 24 horas <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Tu página en 2 semanas <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Más clientes desde el primer mes <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Sin necesidad de saber tecnología <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Precios para pymes <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Diseño moderno y profesional <span class="mq-sep">—</span></span>
+    <span class="mq-item">✓ Cotización gratis en 24 horas <span class="mq-sep">—</span></span>
+  </div>
+</div>
+
+<!-- WHO -->
+<section class="who" id="quienes">
+  <div class="who-left rv">
+    <div>
+      <div class="sec-lbl">¿A quién ayudamos?</div>
+      <h2 class="who-title">Tu negocio lleva años<br>funcionando, pero en<br>internet es <em>invisible.</em></h2>
+      <p class="who-body">Tienes clientes fieles y un buen producto, pero no apareces en Google y tu competencia sí. Te ayudamos a tener una presencia digital que genere confianza y nuevos clientes.</p>
+      <div class="who-tags">
+        <span class="who-tag">Caficultores y exportadores</span>
+        <span class="who-tag">Restaurantes</span>
+        <span class="who-tag">Moda y ropa</span>
+        <span class="who-tag">Comercializadoras</span>
+        <span class="who-tag">Hoteles</span>
+        <span class="who-tag">Marcas de bienestar</span>
+        <span class="who-tag">Agroindustria</span>
+      </div>
+    </div>
+    <!-- REPLACE: foto negocio tradicional -->
+    <div class="who-img who-img-dark rv d2">
+      <svg class="ph-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(237,232,223,.25)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span class="ph-txt" style="color:rgba(237,232,223,.2)">[ imagen negocio — reemplazar ]</span>
+    </div>
+  </div>
+
+  <div class="who-right rv d1">
+    <div>
+      <div class="sec-lbl" style="color:rgba(17,17,16,.4)">También trabajamos con</div>
+      <h2 class="who-title" style="color:var(--ink)">Tienes una idea y quieres saber si el mercado<br>la <em style="color:var(--parch)">compra.</em></h2>
+      <p class="who-body">Te ayudamos a lanzar rápido y probar si tu idea funciona antes de gastar todo. Una página bien hecha y pequeñas pruebas de publicidad bastan para saberlo.</p>
+      <div class="who-tags">
+        <span class="who-tag" style="background:rgba(17,17,16,.1)">Nuevas marcas</span>
+        <span class="who-tag" style="background:rgba(17,17,16,.1)">Productos artesanales</span>
+        <span class="who-tag" style="background:rgba(17,17,16,.1)">Servicios profesionales</span>
+        <span class="who-tag" style="background:rgba(17,17,16,.1)">Fundadores</span>
+      </div>
+    </div>
+    <!-- REPLACE: foto emprendedor -->
+    <div class="who-img rv d3" style="background:rgba(17,17,16,.1)">
+      <svg class="ph-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.3)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span class="ph-txt">[ imagen emprendedor — reemplazar ]</span>
+    </div>
+  </div>
+</section>
+
+<!-- FAST -->
+<section class="fast">
+  <div class="fast-inner">
+    <div class="fast-grid">
+      <div class="rv">
+        <div class="sec-lbl" style="color:rgba(237,232,223,.3)">Por qué elegirnos</div>
+        <h2 class="fast-title">Diseño de <em>alto nivel,</em><br>a la velocidad que<br>tu negocio necesita.</h2>
+        <p class="fast-sub">Los mismos estándares de las mejores empresas de tecnología del mundo — adaptados al tamaño y presupuesto de tu negocio.</p>
+        <div class="pills">
+          <div class="pill">
+            <div class="pill-dot">1</div>
+            <div><div class="pill-title">Usamos inteligencia artificial a nuestro favor</div><div class="pill-desc">Trabajamos más rápido que cualquier agencia tradicional. Menos costo para ti.</div></div>
+          </div>
+          <div class="pill">
+            <div class="pill-dot">2</div>
+            <div><div class="pill-title">Tu página lista en 2 semanas, no en meses</div><div class="pill-desc">Sin rodeos ni esperas. Procesos claros para entregar a tiempo, siempre.</div></div>
+          </div>
+          <div class="pill">
+            <div class="pill-dot">3</div>
+            <div><div class="pill-title">Sabrás exactamente qué está funcionando</div><div class="pill-desc">Cuántas personas visitan tu página y qué hacen — explicado en palabras simples.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="rv d2">
+        <div class="sec-lbl" style="color:rgba(237,232,223,.3);margin-bottom:2.5rem">Cómo lo hacemos</div>
+        <div class="timeline">
+          <div class="tl"><div class="tl-dot tl-a">1</div><div><div class="tl-day">Día 1–2</div><div class="tl-name">Hablamos y entendemos tu negocio</div><div class="tl-desc">Una llamada de 45 min. Sin tecnicismos. Queremos entender qué vendes y qué resultado quieres.</div></div></div>
+          <div class="tl"><div class="tl-dot tl-b">2</div><div><div class="tl-day">Días 3–7</div><div class="tl-name">Diseñamos tu marca y página</div><div class="tl-desc">Colores, tipografía, textos e imágenes. Te mostramos cómo va a quedar antes de publicar.</div></div></div>
+          <div class="tl"><div class="tl-dot tl-c">3</div><div><div class="tl-day">Días 8–12</div><div class="tl-name">Ajustes y aprobación</div><div class="tl-desc">Tú la revisas y haces comentarios. Ajustamos hasta que quede exactamente como la quieres.</div></div></div>
+          <div class="tl"><div class="tl-dot tl-d">4</div><div><div class="tl-day">Día 14</div><div class="tl-name">¡Tu página está viva!</div><div class="tl-desc">La publicamos y te acompañamos los primeros 30 días.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="svcs" id="servicios">
+  <div class="svcs-head rv">
+    <h2 class="svcs-title">Todo lo que necesitas<br>para <em>crecer en digital.</em></h2>
+    <p class="svcs-note">Sistemas diseñados para generar resultados reales, no solo entregables bonitos.</p>
+  </div>
+  <div class="sg rv d1">
+    <div class="svc pop">
+      <div class="svc-top"><span class="svc-num">01</span><span class="svc-badge sb-pop">Lo más popular</span></div>
+      <div><h3 class="svc-name">Página web <em>profesional</em></h3><div class="svc-line"></div><p class="svc-desc">Tu página completa: diseño, textos, imágenes y publicación. Lista para que te encuentren y confíen en ti.</p></div>
+      <div class="svc-time">✓ Lista en 2 semanas</div>
+    </div>
+    <div class="svc">
+      <div class="svc-top"><span class="svc-num">02</span><span class="svc-badge sb-sec">Identidad</span></div>
+      <div><h3 class="svc-name">Marca e <em>identidad visual</em></h3><div class="svc-line"></div><p class="svc-desc">Logo, colores, tipografía y estilo visual que represente lo que es tu negocio.</p></div>
+      <div class="svc-time">✓ Lista en 3 semanas</div>
+    </div>
+    <div class="svc">
+      <div class="svc-top"><span class="svc-num">03</span><span class="svc-badge sb-sec">Emprendedores</span></div>
+      <div><h3 class="svc-name">Valida tu idea <em>antes de invertir</em></h3><div class="svc-line"></div><p class="svc-desc">Una página rápida + pruebas de publicidad para saber si tu producto tiene clientes.</p></div>
+      <div class="svc-time">✓ Lista en 1 semana</div>
+    </div>
+    <div class="svc">
+      <div class="svc-top"><span class="svc-num">04</span><span class="svc-badge sb-sec">Adicional</span></div>
+      <div><h3 class="svc-name">Más clientes con <em>publicidad digital</em></h3><div class="svc-line"></div><p class="svc-desc">Campañas en Google, Instagram o Facebook para atraer personas que quieren lo que vendes.</p></div>
+      <div class="svc-time">✓ Resultados desde el día 1</div>
+    </div>
+    <div class="svc">
+      <div class="svc-top"><span class="svc-num">05</span><span class="svc-badge sb-sec">Adicional</span></div>
+      <div><h3 class="svc-name">Mejora tu página <em>que ya existe</em></h3><div class="svc-line"></div><p class="svc-desc">La rediseñamos o mejoramos. Probamos cambios y medimos cuál versión funciona mejor.</p></div>
+      <div class="svc-time">✓ Lista en 1–2 semanas</div>
+    </div>
+    <div class="svc">
+      <div class="svc-top"><span class="svc-num">06</span><span class="svc-badge sb-sec">Adicional</span></div>
+      <div><h3 class="svc-name">Entiende qué pasa en <em>tu página</em></h3><div class="svc-line"></div><p class="svc-desc">Cuántas personas la visitaron, qué miraron y por qué no compraron — en palabras simples.</p></div>
+      <div class="svc-time">✓ Reporte mensual</div>
+    </div>
+  </div>
+</section>
+
+<!-- CASES -->
+<section class="cases" id="resultados">
+  <div class="cases-inner">
+    <div class="cases-head rv">
+      <div>
+        <div class="sec-lbl" style="color:rgba(17,17,16,.4)">Casos de éxito</div>
+        <h2 class="cases-title">Resultados que<br>hablan por <em>sí solos.</em></h2>
+      </div>
+      <p class="cases-note">Proyectos reales, resultados medibles.</p>
+    </div>
+    <div class="cases-big rv d1">
+      <div class="case">
+        <div class="case-img ci-ink">
+          <!-- REPLACE: imagen proyecto Zubale -->
+          <svg class="ci-ph-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(237,232,223,.2)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span class="ci-ph-txt" style="color:rgba(237,232,223,.2)">[ imagen — reemplazar ]</span>
+        </div>
+        <div class="case-body">
+          <div class="case-sector">App móvil · Logística</div>
+          <div class="case-title">Rediseño del proceso de registro para nuevos usuarios</div>
+          <div class="case-results">
+            <div><div class="cr-val">2.5×</div><div class="cr-lbl">Más usuarios completando el registro</div></div>
+            <div><div class="cr-val">−72%</div><div class="cr-lbl">Menos tiempo para activar la cuenta</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-img ci-stone">
+          <!-- REPLACE: imagen proyecto Merqueo -->
+          <svg class="ci-ph-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.2)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span class="ci-ph-txt">[ imagen — reemplazar ]</span>
+        </div>
+        <div class="case-body">
+          <div class="case-sector">E-commerce · Supermercado online</div>
+          <div class="case-title">Sistema de seguimiento de pedidos en tiempo real</div>
+          <div class="case-results">
+            <div><div class="cr-val">−16%</div><div class="cr-lbl">Menos clientes llamando a preguntar</div></div>
+            <div><div class="cr-val">17</div><div class="cr-lbl">Usuarios entrevistados antes de diseñar</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cases-small rv d2">
+      <div class="case">
+        <div class="case-img ci-sage" style="height:180px">
+          <!-- REPLACE: imagen proyecto Twilio -->
+          <svg class="ci-ph-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.2)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <span class="ci-ph-txt">[ imagen — reemplazar ]</span>
+        </div>
+        <div class="case-body">
+          <div class="case-sector">SaaS · Comunicaciones B2B</div>
+          <div class="case-title">Herramientas de análisis para 125K usuarios</div>
+          <div class="case-results">
+            <div><div class="cr-val">125K</div><div class="cr-lbl">Usuarios por trimestre</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="case coming">
+        <div class="case-coming">
+          <div class="cc-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.4)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="cc-title">Próximamente</div>
+          <p class="cc-sub">Nuevos proyectos con marcas locales en camino.</p>
+          <a href="#contacto" class="cc-link">¿Tu negocio podría ser el siguiente?</a>
+        </div>
+      </div>
+      <div class="case coming">
+        <div class="case-coming">
+          <div class="cc-ico"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.4)" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="cc-title">Descuento de lanzamiento</div>
+          <p class="cc-sub">Precio especial para los primeros clientes a cambio de ser nuestro caso de éxito.</p>
+          <a href="#contacto" class="cc-link">Quiero el descuento →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="proc" id="proceso">
+  <div class="proc-inner">
+    <div class="proc-head rv">
+      <h2 class="proc-title">Simple y <em>claro,</em><br>de inicio a fin.</h2>
+      <p class="proc-note">Sin pasos raros ni términos difíciles. Así funciona trabajar con nosotros.</p>
+    </div>
+    <div class="proc-steps rv d1">
+      <div class="ps"><div class="ps-num">01</div><h3 class="ps-name">Nos cuentas</h3><div class="ps-line"></div><p class="ps-desc">Hablamos y entendemos tu negocio. Sin compromisos ni tecnicismos.</p></div>
+      <div class="ps"><div class="ps-num">02</div><h3 class="ps-name">Diseñamos</h3><div class="ps-line"></div><p class="ps-desc">Creamos la propuesta visual. Te la mostramos antes de construir nada.</p></div>
+      <div class="ps"><div class="ps-num">03</div><h3 class="ps-name">Ajustamos</h3><div class="ps-line"></div><p class="ps-desc">Tus comentarios son bienvenidos. Ajustamos hasta que estés satisfecho.</p></div>
+      <div class="ps"><div class="ps-num">04</div><h3 class="ps-name">Publicamos</h3><div class="ps-line"></div><p class="ps-desc">Tu página sale al aire. Te enseñamos a usarla y te acompañamos 30 días.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team" id="equipo">
+  <div class="team-inner">
+    <div class="team-head rv">
+      <h2 class="team-title">Las personas<br><em>detrás</em> de OSO.</h2>
+      <p class="team-note">Somos dos diseñadores y estrategas con experiencia en las empresas de tecnología más grandes de Latinoamérica. Ahora ponemos ese conocimiento al servicio de negocios locales.</p>
+    </div>
+    <div class="team-grid rv d1">
+      <div class="tcard">
+        <div class="timg">
+          <!-- REPLACE: foto Alejandra -->
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.25)" stroke-width=".8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="timg-lbl">[ foto Alejandra ]</span>
+        </div>
+        <div class="tinfo">
+          <div>
+            <div class="trole">Fundadora · Diseño y Dirección Creativa</div>
+            <div class="tname">Alejandra<br>Osorio</div>
+            <p class="tbio">Diseñadora de producto con más de 8 años de experiencia. Trabajé en Twilio, MercadoLibre y Zubale diseñando productos que usan millones de personas en América Latina.</p>
+          </div>
+          <div class="ttags"><span class="ttag">Twilio</span><span class="ttag">MercadoLibre</span><span class="ttag">Zubale</span></div>
+        </div>
+      </div>
+      <div class="tcard">
+        <div class="timg timg-2">
+          <!-- REPLACE: foto Juan David -->
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.25)" stroke-width=".8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          <span class="timg-lbl">[ foto Juan David ]</span>
+        </div>
+        <div class="tinfo">
+          <div>
+            <div class="trole">Cofundador · Estrategia de Producto</div>
+            <div class="tname">Juan David<br>Marín</div>
+            <p class="tbio">Experto en estrategia de producto y crecimiento digital. Construye los sistemas que ayudan a los negocios a entender qué funciona antes de invertir más.</p>
+          </div>
+          <div class="ttags"><span class="ttag">Estrategia digital</span><span class="ttag">Crecimiento</span><span class="ttag">Producto</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contacto">
+  <div class="cta-l rv">
+    <div class="cta-eye">Hablemos sin compromiso</div>
+    <h2 class="cta-title">¿Listo para que<br>tu negocio<br><em>crezca?</em></h2>
+    <p class="cta-sub">Cuéntanos qué necesitas y te enviamos una cotización gratis en menos de 24 horas. Sin términos técnicos, sin letra pequeña.</p>
+    <div class="cta-btns">
+      <a href="mailto:alejandra.o72@gmail.com" class="btn-ink">Quiero mi cotización gratis</a>
+      <a href="https://wa.me/573115134498" target="_blank" class="btn-ghost-blush">WhatsApp →</a>
+    </div>
+    <div class="cta-contacts">
+      <div class="cta-row"><div class="cdot"></div><a href="mailto:alejandra.o72@gmail.com">alejandra.o72@gmail.com</a></div>
+      <div class="cta-row"><div class="cdot"></div><a href="https://wa.me/573115134498">+57 311 513 4498</a></div>
+    </div>
+  </div>
+  <div class="cta-r">
+    <!-- REPLACE: foto editorial final -->
+    <div class="cta-r-ph">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(237,232,223,.15)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span class="cta-r-txt">[ imagen — reemplazar ]</span>
+    </div>
+    <div class="cta-wm">O</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fi">
+    <div class="ftop">
+      <div>
+        <div class="flogo"><img src="logo.png" alt="OSO" style="height:22px;width:auto;filter:brightness(0) invert(1);opacity:.75"></div>
+        <div class="ftag">Diseño · Estrategia · Crecimiento digital · Bogotá, Colombia</div>
+      </div>
+      <div class="fcols">
+        <div>
+          <div class="fct">Navegación</div>
+          <ul class="flinks">
+            <li><a href="#quienes">¿A quién ayudamos?</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#resultados">Resultados</a></li>
+            <li><a href="#equipo">El equipo</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="fct">Contáctanos</div>
+          <ul class="flinks">
+            <li><a href="mailto:alejandra.o72@gmail.com">alejandra.o72@gmail.com</a></li>
+            <li><a href="https://wa.me/573115134498">+57 311 513 4498</a></li>
+            <li><a href="https://alejandrao72-hue.github.io/" target="_blank">Portafolio — Alejandra</a></li>
+            <li><a href="https://www.linkedin.com/in/alejandra-osorio-9b014614a/" target="_blank">LinkedIn</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="fbot">
+      <span class="fcp">© 2026 OSO Studio — Bogotá, Colombia</span>
+      <div class="fem"><a href="mailto:alejandra.o72@gmail.com">alejandra.o72@gmail.com</a></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── Cursor ── */
+const cur = document.getElementById('cur'), ring = document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function loop(){ rx+=(mx-rx)*.13; ry+=(my-ry)*.13; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => { ring.style.width='48px'; ring.style.height='48px'; ring.style.borderColor='var(--blush)'; });
+  el.addEventListener('mouseleave', () => { ring.style.width='32px'; ring.style.height='32px'; ring.style.borderColor='rgba(17,17,16,.2)'; });
+});
+
+/* ── Mobile menu ── */
+function toggleMenu(){ document.getElementById('mmenu').classList.toggle('open'); }
+
+/* ── Hero word reveal ── */
+document.querySelectorAll('.h-title .w-inner').forEach((el, i) => {
+  el.style.animation = `wr .75s cubic-bezier(.22,1,.36,1) ${.3 + i * .1}s forwards`;
+});
+
+/* ── Scroll reveal ── */
+const ro = new IntersectionObserver(es => {
+  es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+}, { threshold: .08 });
+document.querySelectorAll('.rv').forEach(el => ro.observe(el));
+
+/* ── Parallax hero watermark ── */
+window.addEventListener('scroll', () => {
+  const wm = document.querySelector('.h-wm');
+  if (wm) wm.style.transform = `translateY(${scrollY * .15}px)`;
+});
+</script>
+</body>
+</html>
