@@ -66,47 +66,36 @@ nav {
 }
 .h-left { background: var(--ink); padding: 5rem 3rem 4rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
 .h-left::before { content: ''; position: absolute; bottom: -80px; left: -80px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(242,191,202,.08) 0%, transparent 65%); pointer-events: none; }
-@media (max-width: 960px) {
-  .h-left { background: transparent !important; }
-  .h-badge { background: rgba(237,232,223,.1) !important; border-color: rgba(237,232,223,.2) !important; }
-}
 .h-right { background: var(--blush); padding: 5rem 3rem 4rem; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; }
-
-/* Big background letter */
-.h-wm { position: absolute; bottom: -.1em; right: -.05em; font-family: 'Playfair Display', serif; font-size: 28vw; font-weight: 700; color: rgba(17,17,16,.07); line-height: 1; pointer-events: none; letter-spacing: -.04em; }
-
-.h-logo { font-weight: 600; font-size: .85rem; letter-spacing: .28em; text-transform: uppercase; color: var(--parch); opacity: 0; animation: fu .6s .1s forwards; }
-.h-badge { display: inline-flex; align-items: center; gap: .5rem; background: rgba(237,232,223,.08); border: .5px solid rgba(237,232,223,.15); color: rgba(237,232,223,.5); border-radius: 2rem; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: .3rem .85rem; width: fit-content; opacity: 0; animation: fu .6s .2s forwards; }
-
-/* Word-by-word headline */
-.h-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 8rem); font-weight: 400; line-height: .92; letter-spacing: -.02em; color: var(--parch); }
+.h-wm { position: absolute; bottom: -.1em; right: -.05em; font-family: 'Playfair Display', serif; font-size: 28vw; font-weight: 700; color: rgba(17,17,16,.07); line-height: 1; pointer-events: none; letter-spacing: -.04em; animation: wmFloat 10s ease-in-out infinite; }
+@keyframes wmFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+.h-badge { display: inline-flex; align-items: center; gap: .5rem; background: rgba(237,232,223,.08); border: .5px solid rgba(237,232,223,.15); color: rgba(237,232,223,.45); border-radius: 2rem; font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; padding: .3rem .85rem; width: fit-content; opacity: 0; animation: fu .6s .2s forwards; }
+.h-title { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 7vw, 8rem); font-weight: 700; line-height: .92; letter-spacing: -.02em; color: var(--parch); }
 .h-title .w { display: inline-block; overflow: hidden; }
-.h-title .w-inner { display: block; transform: translateY(110%); }
+.h-title .w-inner { display: block; transform: translateY(110%); animation: wordUp .75s cubic-bezier(.22,1,.36,1) forwards; }
 .h-title em { font-style: italic; color: var(--blush); }
-
+.tw1 { animation-delay: .4s; }
+.tw2 { animation-delay: .52s; }
+.tw3 { animation-delay: .64s; }
+.tw4 { animation-delay: .76s; }
+@keyframes wordUp { from{transform:translateY(110%)} to{transform:translateY(0)} }
 .h-sub { font-size: .88rem; line-height: 1.75; color: rgba(237,232,223,.42); font-weight: 300; max-width: 340px; opacity: 0; animation: fu .8s .9s forwards; }
 .h-btns { display: flex; gap: .75rem; flex-wrap: wrap; opacity: 0; animation: fu .8s 1s forwards; }
 .btn-parch { background: var(--parch); color: var(--ink); padding: .85rem 2rem; border-radius: 3rem; font-size: .75rem; letter-spacing: .07em; font-weight: 500; text-decoration: none; display: inline-block; transition: background .2s, transform .2s; }
 .btn-parch:hover { background: var(--blush); transform: translateY(-2px); }
 .btn-ghost-dark { border: .5px solid rgba(237,232,223,.2); color: rgba(237,232,223,.45); padding: .85rem 1.8rem; border-radius: 3rem; font-size: .75rem; letter-spacing: .07em; text-decoration: none; display: inline-block; transition: border-color .2s, color .2s; }
 .btn-ghost-dark:hover { border-color: var(--blush); color: var(--blush); }
-
-/* Right side hero */
 .h-r-top { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; opacity: 0; animation: fu .7s .3s forwards; }
-.h-r-tag { font-size: .56rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(17,17,16,.45); }
-.h-r-num { font-size: .56rem; letter-spacing: .1em; color: rgba(17,17,16,.35); }
-
-/* Image placeholder hero */
+.h-r-tag { font-size: .56rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(17,17,16,.4); }
+.h-r-num { font-size: .56rem; letter-spacing: .1em; color: rgba(17,17,16,.3); }
 .h-r-img { flex: 1; margin: 1.5rem 0; border-radius: 1rem; overflow: hidden; min-height: 320px; background: rgba(17,17,16,.06); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .5rem; opacity: 0; animation: fu .9s .5s forwards; }
-.h-r-img::before { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(17,17,16,.04) 0%, rgba(17,17,16,.1) 100%); }
-.ph-ico { opacity: .2; position: relative; z-index: 1; }
-.ph-txt { font-size: .52rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(17,17,16,.28); position: relative; z-index: 1; }
-
+.ph-ico { opacity: .18; position: relative; z-index: 1; }
+.ph-txt { font-size: .52rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(17,17,16,.22); position: relative; z-index: 1; }
 .h-r-bottom { display: flex; justify-content: space-between; align-items: flex-end; position: relative; z-index: 1; opacity: 0; animation: fu .8s .7s forwards; }
 .h-metric { }
-.h-m-val { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--ink); line-height: 1; }
-.h-m-lbl { font-size: .54rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,16,.45); margin-top: .2rem; }
-.h-r-desc { font-size: .75rem; line-height: 1.65; color: rgba(17,17,16,.5); font-weight: 300; max-width: 200px; text-align: right; }
+.h-m-val { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--ink); line-height: 1; font-weight: 700; }
+.h-m-lbl { font-size: .54rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(17,17,16,.4); margin-top: .2rem; }
+.h-r-desc { font-size: .75rem; line-height: 1.65; color: rgba(17,17,16,.45); font-weight: 300; max-width: 200px; text-align: right; }
 
 /* ── PROOF STRIP ─────────────────────── */
 .proof { background: var(--ink); display: grid; grid-template-columns: repeat(4,1fr); }
@@ -339,11 +328,9 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
   nav { padding: 0 1.5rem; }
   .n-links { display: none; }
   .n-ham { display: flex; }
-  .hero { grid-template-columns: 1fr; min-height: 100vh; }
-  .h-left { padding: 3.5rem 1.5rem 4rem; min-height: 100vh; background: #0a0a09; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
-  .h-left > * { position: relative; z-index: 2; }
+  .hero { grid-template-columns: 1fr; }
+  .h-left { padding: 3.5rem 1.5rem 3rem; min-height: 60vh; }
   .h-right { display: none; }
-  #mobile-anim { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
   .proof { grid-template-columns: 1fr 1fr; }
   .proof-item { padding: 1.2rem 1.2rem; }
   .who { grid-template-columns: 1fr; }
@@ -406,23 +393,19 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
 <!-- ── HERO ── -->
 <section class="hero">
   <div class="h-left">
-    <canvas id="mobile-anim"></canvas>
     <div>
-
-      <div class="h-badge" style="margin-top:.75rem">Estudio creativo · Bogotá · Est. 2024</div>
+      <div class="h-badge">Estudio creativo · Bogotá · Est. 2024</div>
     </div>
-
-    <div style="margin: 3rem 0;">
-      <h1 class="h-title" id="htitle">
-        <span class="w"><span class="w-inner">Tu negocio</span></span><br>
-        <span class="w"><span class="w-inner">merece una</span></span><br>
-        <span class="w"><span class="w-inner">web que</span></span>
-        <span class="w"><em class="w-inner">venda.</em></span>
+    <div>
+      <h1 class="h-title">
+        <span class="w"><span class="w-inner tw1">Tu negocio</span></span><br>
+        <span class="w"><span class="w-inner tw2">merece una</span></span><br>
+        <span class="w"><span class="w-inner tw3">web que</span></span>
+        <span class="w"><em class="w-inner tw4">venda.</em></span>
       </h1>
     </div>
-
     <div>
-      <p class="h-sub">Diseñamos y construimos páginas web, marcas e identidades digitales para negocios latinoamericanos. Rápido, moderno y con resultados medibles.</p>
+      <p class="h-sub">Diseñamos páginas web, marcas e identidades digitales para negocios latinoamericanos. Rápido, moderno y con resultados medibles.</p>
       <div class="h-btns" style="margin-top:1.5rem">
         <a href="#contacto" class="btn-parch">Cotización gratis</a>
         <a href="#resultados" class="btn-ghost-dark">Ver resultados →</a>
@@ -436,9 +419,10 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
       <div class="h-r-num">2024 ©</div>
     </div>
 
-    <!-- 3D blob animation -->
-    <div class="h-r-img" style="background:transparent;overflow:hidden;position:relative">
-      <canvas id="blobCanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+    <!-- REPLACE: foto editorial -->
+    <div class="h-r-img">
+      <svg class="ph-ico" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(17,17,16,.3)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <span class="ph-txt">[ imagen — reemplazar ]</span>
     </div>
 
     <div class="h-r-bottom">
@@ -839,220 +823,5 @@ window.addEventListener('scroll', () => {
 });
 </script>
 
-<!-- THREE.JS BLOB — desktop only -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script>
-// ── DESKTOP BLOB (Three.js) ──────────────────────
-(function() {
-  if (window.innerWidth <= 960) return; // skip on mobile
-  const canvas = document.getElementById('blobCanvas');
-  if (!canvas) return;
-
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0x000000, 0);
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
-  camera.position.z = 3.2;
-
-  const colors = [
-    new THREE.Color(0xF2BFCA),
-    new THREE.Color(0x9DAF9B),
-    new THREE.Color(0xB8C4CE),
-    new THREE.Color(0xEDE8DF),
-  ];
-
-  const geo = new THREE.SphereGeometry(1.2, 128, 128);
-  const posAttr = geo.attributes.position;
-  const orig = new Float32Array(posAttr.array);
-
-  const mat = new THREE.MeshStandardMaterial({ color: colors[0], roughness: 0.35, metalness: 0.1 });
-  scene.add(new THREE.Mesh(geo, mat));
-
-  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-  const l1 = new THREE.PointLight(0xF2BFCA, 2, 10); l1.position.set(2,2,2); scene.add(l1);
-  const l2 = new THREE.PointLight(0x9DAF9B, 1.8, 10); l2.position.set(-2,-1,1); scene.add(l2);
-  const l3 = new THREE.PointLight(0xB8C4CE, 1.2, 10); l3.position.set(0,-2,-1); scene.add(l3);
-
-  function noise(x,y,z){ return Math.sin(x*1.5)*Math.cos(y*1.5)*Math.sin(z*1.5)+Math.sin(x*2.8+.5)*Math.cos(z*2.2)+Math.cos(y*3.1+1.2)*Math.sin(x*2.1); }
-
-  function resize(){ const w=canvas.clientWidth,h=canvas.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
-  resize(); window.addEventListener('resize', resize);
-
-  let ci=0, ct=0, t=0;
-  const mesh = scene.children[1];
-  function animate(){
-    requestAnimationFrame(animate); t+=0.008;
-    for(let i=0;i<posAttr.count;i++){
-      const ox=orig[i*3],oy=orig[i*3+1],oz=orig[i*3+2];
-      const l=Math.sqrt(ox*ox+oy*oy+oz*oz);
-      const d=noise(ox/l+t*.4,oy/l+t*.3,oz/l+t*.35)*.28;
-      posAttr.setXYZ(i,ox+(ox/l)*d,oy+(oy/l)*d,oz+(oz/l)*d);
-    }
-    posAttr.needsUpdate=true; geo.computeVertexNormals();
-    ct+=0.003; if(ct>=1){ct=0;ci=(ci+1)%colors.length;}
-    mat.color.lerpColors(colors[ci],colors[(ci+1)%colors.length],ct);
-    mesh.rotation.y=t*.18; mesh.rotation.x=Math.sin(t*.12)*.25;
-    l1.position.x=Math.sin(t*.5)*2.5; l1.position.y=Math.cos(t*.4)*2;
-    l2.position.x=Math.cos(t*.35)*2; l2.position.z=Math.sin(t*.45)*2;
-    renderer.render(scene,camera);
-  }
-  animate();
-})();
-
-// ── MOBILE HERO ANIMATION (Canvas 2D) ───────────────
-(function() {
-  if (window.innerWidth > 960) return;
-  const canvas = document.getElementById('mobile-anim');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  let W, H, t = 0, phase = 0; // phase 0=blob, 1=transitioning, 2=orbs
-  const BLOB_DURATION = 2.5;   // seconds blob is shown
-  const TRANS_DURATION = 2.0;  // seconds of transition
-  let startTime = null;
-
-  // Palette — Option A: Blush → Lavender → Indigo, no greys
-  const BLUSH   = {r:242, g:175, b:190};
-  const LAVEND  = {r:196, g:178, b:220};
-  const INDIGO  = {r:100, g:90,  b:155};
-
-  // Sphere gradient stops (light → dark, no grey)
-  const SPHERE_STOPS = [
-    [242,175,190],  // blush
-    [196,178,220],  // lavender
-    [88, 78, 140],  // deep indigo
-  ];
-
-  // Orbs — same palette
-  const orbs = [
-    { x:.82, y:.12, r:.65, color: BLUSH,  phase: 0   },
-    { x:.12, y:.82, r:.58, color: LAVEND, phase: 2.1 },
-    { x:.78, y:.78, r:.48, color: INDIGO, phase: 4.2 },
-  ];
-
-  function resize() {
-    W = canvas.offsetWidth; H = canvas.offsetHeight;
-    canvas.width = W * window.devicePixelRatio;
-    canvas.height = H * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }
-  resize(); window.addEventListener('resize', resize);
-
-  // Circle — perfect sphere with subtle volume, like a moon
-  function drawBlob(cx, cy, radius, t, alpha) {
-    ctx.save();
-
-    // Slow breathing scale — very subtle
-    const breathe = 1 + Math.sin(t * .4) * .018;
-    const r = radius * breathe;
-
-    // Soft outer glow — blush halo
-    const halo = ctx.createRadialGradient(cx, cy, r * .6, cx, cy, r * 1.8);
-    halo.addColorStop(0,   `rgba(242,175,190,${.2 * alpha})`);
-    halo.addColorStop(.5,  `rgba(196,178,220,${.08 * alpha})`);
-    halo.addColorStop(1,   `rgba(100,90,155,0)`);
-    ctx.beginPath();
-    ctx.arc(cx, cy, r * 1.8, 0, Math.PI * 2);
-    ctx.fillStyle = halo;
-    ctx.fill();
-
-    // Main circle — radial gradient for 3D volume, Option A palette
-    const lightX = cx - r * .28;
-    const lightY = cy - r * .32;
-    const sphere = ctx.createRadialGradient(lightX, lightY, r * .05, cx, cy, r);
-    sphere.addColorStop(0,    `rgba(237,232,223,${.78 * alpha})`);  // bright highlight
-    sphere.addColorStop(.18,  `rgba(${SPHERE_STOPS[0][0]},${SPHERE_STOPS[0][1]},${SPHERE_STOPS[0][2]},${.7 * alpha})`);  // blush
-    sphere.addColorStop(.50,  `rgba(${SPHERE_STOPS[1][0]},${SPHERE_STOPS[1][1]},${SPHERE_STOPS[1][2]},${.55 * alpha})`); // lavender
-    sphere.addColorStop(.80,  `rgba(${SPHERE_STOPS[2][0]},${SPHERE_STOPS[2][1]},${SPHERE_STOPS[2][2]},${.4 * alpha})`);  // indigo
-    sphere.addColorStop(1,    `rgba(20,16,35,${.65 * alpha})`);     // deep indigo edge, not grey
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = sphere;
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  // Orb — large diffuse Turrell-style glow
-  function drawOrb(orb, alpha) {
-    const x = orb.x * W, y = orb.y * H;
-    const r = orb.r * Math.max(W, H);
-    const c = orb.color;
-    const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
-    grd.addColorStop(0,   `rgba(${c.r},${c.g},${c.b},${.55 * alpha})`);
-    grd.addColorStop(.3,  `rgba(${c.r},${c.g},${c.b},${.28 * alpha})`);
-    grd.addColorStop(.65, `rgba(${c.r},${c.g},${c.b},${.08 * alpha})`);
-    grd.addColorStop(1,   `rgba(${c.r},${c.g},${c.b},0)`);
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI*2);
-    ctx.fillStyle = grd;
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function easeInOut(p) { return p < .5 ? 2*p*p : -1+(4-2*p)*p; }
-
-  function frame(ts) {
-    if (!startTime) startTime = ts;
-    const elapsed = (ts - startTime) / 1000;
-    t += 0.01; // slow, meditative
-
-    // Deep dark base — almost black
-    ctx.fillStyle = 'rgb(12,12,11)';
-    ctx.fillRect(0, 0, W, H);
-
-    // Phase logic
-    let blobAlpha = 0, orbAlpha = 0;
-    if (elapsed < BLOB_DURATION) {
-      blobAlpha = Math.min(1, elapsed / .8); // fade in over 0.8s
-      orbAlpha  = 0;
-    } else if (elapsed < BLOB_DURATION + TRANS_DURATION) {
-      const p = easeInOut((elapsed - BLOB_DURATION) / TRANS_DURATION);
-      blobAlpha = 1 - p;
-      orbAlpha  = p;
-    } else {
-      blobAlpha = 0;
-      orbAlpha  = 1;
-    }
-
-    // Move orbs — very slow, breathing rhythm
-    orbs.forEach(o => {
-      o.x += Math.sin(t * .15 + o.phase) * .00045;
-      o.y += Math.cos(t * .12 + o.phase) * .00035;
-      o.x = Math.max(.05, Math.min(.95, o.x));
-      o.y = Math.max(.05, Math.min(.95, o.y));
-    });
-
-    // Draw orbs
-    if (orbAlpha > 0) orbs.forEach(o => drawOrb(o, orbAlpha));
-
-    // Draw blob (centered, top half)
-    if (blobAlpha > 0) {
-      const scale = elapsed < BLOB_DURATION ? 1 : 1 + easeInOut((elapsed - BLOB_DURATION) / TRANS_DURATION) * .5;
-      drawBlob(W * .5, H * .38, Math.min(W,H) * .3 * scale, t, blobAlpha);
-    }
-
-    // Overlay: dark at top (nav/badge), transparent in center (light breathes),
-    // dark at bottom (text + buttons = must be readable)
-    const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0,    'rgba(12,12,11,.92)'); // nav area
-    grad.addColorStop(.14,  'rgba(12,12,11,.6)');
-    grad.addColorStop(.3,   'rgba(12,12,11,.05)'); // let light breathe
-    grad.addColorStop(.52,  'rgba(12,12,11,.05)'); // center open
-    grad.addColorStop(.65,  'rgba(12,12,11,.78)'); // text starts
-    grad.addColorStop(.82,  'rgba(12,12,11,.92)');
-    grad.addColorStop(1,    'rgba(12,12,11,.98)'); // buttons
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
-</script>
 </body>
 </html>
