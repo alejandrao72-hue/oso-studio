@@ -340,7 +340,7 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
   .n-links { display: none; }
   .n-ham { display: flex; }
   .hero { grid-template-columns: 1fr; min-height: 100vh; }
-  .h-left { padding: 3.5rem 1.5rem 4rem; min-height: 100vh; background: #111110; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
+  .h-left { padding: 3.5rem 1.5rem 4rem; min-height: 100vh; background: #0a0a09; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
   .h-left > * { position: relative; z-index: 2; }
   .h-right { display: none; }
   #mobile-anim { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
@@ -913,16 +913,23 @@ window.addEventListener('scroll', () => {
   const TRANS_DURATION = 2.0;  // seconds of transition
   let startTime = null;
 
-  // Palette
-  const BLUSH  = {r:242, g:191, b:202};
-  const SAGE   = {r:157, g:175, b:155};
-  const SLATE  = {r:184, g:196, b:206};
+  // Palette — Option A: Blush → Lavender → Indigo, no greys
+  const BLUSH   = {r:242, g:175, b:190};
+  const LAVEND  = {r:196, g:178, b:220};
+  const INDIGO  = {r:100, g:90,  b:155};
 
-  // Orbs state
+  // Sphere gradient stops (light → dark, no grey)
+  const SPHERE_STOPS = [
+    [242,175,190],  // blush
+    [196,178,220],  // lavender
+    [88, 78, 140],  // deep indigo
+  ];
+
+  // Orbs — same palette
   const orbs = [
-    { x:.72, y:.15, r:.55, color: BLUSH,  vx:-.0004, vy:.0003, phase: 0 },
-    { x:.15, y:.78, r:.45, color: SAGE,   vx:.0005,  vy:-.0002, phase: 2.1 },
-    { x:.5,  y:.5,  r:.35, color: SLATE,  vx:-.0003, vy:.0004,  phase: 4.2 },
+    { x:.82, y:.12, r:.65, color: BLUSH,  phase: 0   },
+    { x:.12, y:.82, r:.58, color: LAVEND, phase: 2.1 },
+    { x:.78, y:.78, r:.48, color: INDIGO, phase: 4.2 },
   ];
 
   function resize() {
@@ -933,45 +940,53 @@ window.addEventListener('scroll', () => {
   }
   resize(); window.addEventListener('resize', resize);
 
-  // Blob morph path using sin waves
+  // Circle — perfect sphere with subtle volume, like a moon
   function drawBlob(cx, cy, radius, t, alpha) {
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.beginPath();
-    const pts = 80;
-    for (let i = 0; i <= pts; i++) {
-      const angle = (i / pts) * Math.PI * 2;
-      const noise =
-        Math.sin(angle * 2 + t * .8)  * .18 +
-        Math.sin(angle * 3 - t * .6)  * .12 +
-        Math.sin(angle * 5 + t * .4)  * .07;
-      const r = radius * (1 + noise);
-      const x = cx + Math.cos(angle) * r;
-      const y = cy + Math.sin(angle) * r;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    }
-    ctx.closePath();
 
-    // Gradient fill
-    const grd = ctx.createRadialGradient(cx - radius*.2, cy - radius*.2, radius*.1, cx, cy, radius*1.3);
-    grd.addColorStop(0,  `rgba(${BLUSH.r},${BLUSH.g},${BLUSH.b},1)`);
-    grd.addColorStop(.45,`rgba(${SAGE.r},${SAGE.g},${SAGE.b},.9)`);
-    grd.addColorStop(.8, `rgba(${SLATE.r},${SLATE.g},${SLATE.b},.7)`);
-    grd.addColorStop(1,  `rgba(17,17,16,0)`);
-    ctx.fillStyle = grd;
+    // Slow breathing scale — very subtle
+    const breathe = 1 + Math.sin(t * .4) * .018;
+    const r = radius * breathe;
+
+    // Soft outer glow — blush halo
+    const halo = ctx.createRadialGradient(cx, cy, r * .6, cx, cy, r * 1.8);
+    halo.addColorStop(0,   `rgba(242,175,190,${.2 * alpha})`);
+    halo.addColorStop(.5,  `rgba(196,178,220,${.08 * alpha})`);
+    halo.addColorStop(1,   `rgba(100,90,155,0)`);
+    ctx.beginPath();
+    ctx.arc(cx, cy, r * 1.8, 0, Math.PI * 2);
+    ctx.fillStyle = halo;
     ctx.fill();
+
+    // Main circle — radial gradient for 3D volume, Option A palette
+    const lightX = cx - r * .28;
+    const lightY = cy - r * .32;
+    const sphere = ctx.createRadialGradient(lightX, lightY, r * .05, cx, cy, r);
+    sphere.addColorStop(0,    `rgba(237,232,223,${.78 * alpha})`);  // bright highlight
+    sphere.addColorStop(.18,  `rgba(${SPHERE_STOPS[0][0]},${SPHERE_STOPS[0][1]},${SPHERE_STOPS[0][2]},${.7 * alpha})`);  // blush
+    sphere.addColorStop(.50,  `rgba(${SPHERE_STOPS[1][0]},${SPHERE_STOPS[1][1]},${SPHERE_STOPS[1][2]},${.55 * alpha})`); // lavender
+    sphere.addColorStop(.80,  `rgba(${SPHERE_STOPS[2][0]},${SPHERE_STOPS[2][1]},${SPHERE_STOPS[2][2]},${.4 * alpha})`);  // indigo
+    sphere.addColorStop(1,    `rgba(20,16,35,${.65 * alpha})`);     // deep indigo edge, not grey
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = sphere;
+    ctx.fill();
+
     ctx.restore();
   }
 
+  // Orb — large diffuse Turrell-style glow
   function drawOrb(orb, alpha) {
     const x = orb.x * W, y = orb.y * H;
-    const r = orb.r * Math.min(W, H);
+    const r = orb.r * Math.max(W, H);
+    const c = orb.color;
     const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
-    grd.addColorStop(0,   `rgba(${orb.color.r},${orb.color.g},${orb.color.b},${.38 * alpha})`);
-    grd.addColorStop(.5,  `rgba(${orb.color.r},${orb.color.g},${orb.color.b},${.18 * alpha})`);
-    grd.addColorStop(1,   `rgba(${orb.color.r},${orb.color.g},${orb.color.b},0)`);
+    grd.addColorStop(0,   `rgba(${c.r},${c.g},${c.b},${.55 * alpha})`);
+    grd.addColorStop(.3,  `rgba(${c.r},${c.g},${c.b},${.28 * alpha})`);
+    grd.addColorStop(.65, `rgba(${c.r},${c.g},${c.b},${.08 * alpha})`);
+    grd.addColorStop(1,   `rgba(${c.r},${c.g},${c.b},0)`);
     ctx.save();
-    ctx.globalAlpha = 1;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI*2);
     ctx.fillStyle = grd;
@@ -979,52 +994,58 @@ window.addEventListener('scroll', () => {
     ctx.restore();
   }
 
+  function easeInOut(p) { return p < .5 ? 2*p*p : -1+(4-2*p)*p; }
+
   function frame(ts) {
     if (!startTime) startTime = ts;
     const elapsed = (ts - startTime) / 1000;
-    t += 0.018;
+    t += 0.01; // slow, meditative
 
-    ctx.clearRect(0, 0, W, H);
+    // Deep dark base — almost black
+    ctx.fillStyle = 'rgb(12,12,11)';
+    ctx.fillRect(0, 0, W, H);
 
-    // Determine phase
-    let blobAlpha = 1, orbAlpha = 0;
+    // Phase logic
+    let blobAlpha = 0, orbAlpha = 0;
     if (elapsed < BLOB_DURATION) {
-      // Phase 1: blob only
-      blobAlpha = 1; orbAlpha = 0;
+      blobAlpha = Math.min(1, elapsed / .8); // fade in over 0.8s
+      orbAlpha  = 0;
     } else if (elapsed < BLOB_DURATION + TRANS_DURATION) {
-      // Phase 2: transition — blob shrinks + fades, orbs emerge
-      const p = (elapsed - BLOB_DURATION) / TRANS_DURATION;
+      const p = easeInOut((elapsed - BLOB_DURATION) / TRANS_DURATION);
       blobAlpha = 1 - p;
-      orbAlpha = p;
+      orbAlpha  = p;
     } else {
-      // Phase 3: orbs only, gently moving
-      blobAlpha = 0; orbAlpha = 1;
+      blobAlpha = 0;
+      orbAlpha  = 1;
     }
 
-    // Move orbs
+    // Move orbs — very slow, breathing rhythm
     orbs.forEach(o => {
-      o.x += Math.sin(t * .3 + o.phase) * .0008;
-      o.y += Math.cos(t * .25 + o.phase) * .0006;
-      o.x = Math.max(.1, Math.min(.9, o.x));
-      o.y = Math.max(.1, Math.min(.9, o.y));
+      o.x += Math.sin(t * .15 + o.phase) * .00045;
+      o.y += Math.cos(t * .12 + o.phase) * .00035;
+      o.x = Math.max(.05, Math.min(.95, o.x));
+      o.y = Math.max(.05, Math.min(.95, o.y));
     });
 
-    // Draw orbs first (behind)
+    // Draw orbs
     if (orbAlpha > 0) orbs.forEach(o => drawOrb(o, orbAlpha));
 
-    // Draw blob
+    // Draw blob (centered, top half)
     if (blobAlpha > 0) {
-      // Blob starts centered, grows slightly during transition
-      const scale = elapsed < BLOB_DURATION ? 1 : 1 + (elapsed - BLOB_DURATION) / TRANS_DURATION * .3;
-      drawBlob(W * .5, H * .42, Math.min(W, H) * .32 * scale, t, blobAlpha);
+      const scale = elapsed < BLOB_DURATION ? 1 : 1 + easeInOut((elapsed - BLOB_DURATION) / TRANS_DURATION) * .5;
+      drawBlob(W * .5, H * .38, Math.min(W,H) * .3 * scale, t, blobAlpha);
     }
 
-    // Overlay gradient for text legibility (always)
+    // Overlay: dark at top (nav/badge), transparent in center (light breathes),
+    // dark at bottom (text + buttons = must be readable)
     const grad = ctx.createLinearGradient(0, 0, 0, H);
-    grad.addColorStop(0,   'rgba(17,17,16,.5)');
-    grad.addColorStop(.35, 'rgba(17,17,16,.15)');
-    grad.addColorStop(.65, 'rgba(17,17,16,.55)');
-    grad.addColorStop(1,   'rgba(17,17,16,.92)');
+    grad.addColorStop(0,    'rgba(12,12,11,.92)'); // nav area
+    grad.addColorStop(.14,  'rgba(12,12,11,.6)');
+    grad.addColorStop(.3,   'rgba(12,12,11,.05)'); // let light breathe
+    grad.addColorStop(.52,  'rgba(12,12,11,.05)'); // center open
+    grad.addColorStop(.65,  'rgba(12,12,11,.78)'); // text starts
+    grad.addColorStop(.82,  'rgba(12,12,11,.92)');
+    grad.addColorStop(1,    'rgba(12,12,11,.98)'); // buttons
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, W, H);
 
