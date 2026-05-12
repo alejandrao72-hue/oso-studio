@@ -339,33 +339,11 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
   nav { padding: 0 1.5rem; }
   .n-links { display: none; }
   .n-ham { display: flex; }
-  .hero { grid-template-columns: 1fr; position: relative; }
-  .h-left { 
-    padding: 3.5rem 1.5rem 5rem; 
-    min-height: 100vh; 
-    position: relative; z-index: 2;
-    background: transparent;
-  }
-  .h-left::after {
-    content: '';
-    position: absolute; inset: 0; z-index: -1;
-    background: linear-gradient(160deg, rgba(17,17,16,.82) 0%, rgba(17,17,16,.55) 60%, rgba(17,17,16,.3) 100%);
-    pointer-events: none;
-  }
-  .h-right { 
-    display: none;
-  }
-  /* Blob canvas goes full hero on mobile */
-  #blobCanvas {
-    position: fixed !important;
-    top: 0; left: 0; right: 0;
-    height: 100vh !important;
-    width: 100vw !important;
-    z-index: 0;
-    pointer-events: none;
-  }
-  /* Only show blob behind hero, hide after scroll */
-  .hero { isolation: isolate; }
+  .hero { grid-template-columns: 1fr; min-height: 100vh; }
+  .h-left { padding: 3.5rem 1.5rem 4rem; min-height: 100vh; background: #111110; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; z-index: 1; }
+  .h-left > * { position: relative; z-index: 2; }
+  .h-right { display: none; }
+  #mobile-anim { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
   .proof { grid-template-columns: 1fr 1fr; }
   .proof-item { padding: 1.2rem 1.2rem; }
   .who { grid-template-columns: 1fr; }
@@ -428,6 +406,7 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
 <!-- ── HERO ── -->
 <section class="hero">
   <div class="h-left">
+    <canvas id="mobile-anim"></canvas>
     <div>
 
       <div class="h-badge" style="margin-top:.75rem">Estudio creativo · Bogotá · Est. 2024</div>
@@ -860,152 +839,198 @@ window.addEventListener('scroll', () => {
 });
 </script>
 
-<!-- THREE.JS BLOB -->
+<!-- THREE.JS BLOB — desktop only -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
+// ── DESKTOP BLOB (Three.js) ──────────────────────
 (function() {
+  if (window.innerWidth <= 960) return; // skip on mobile
   const canvas = document.getElementById('blobCanvas');
   if (!canvas) return;
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.z = 3.2;
 
-  // Palette colors
   const colors = [
-    new THREE.Color(0xF2BFCA), // blush
-    new THREE.Color(0x9DAF9B), // sage
-    new THREE.Color(0xB8C4CE), // slate
-    new THREE.Color(0xEDE8DF), // parch
+    new THREE.Color(0xF2BFCA),
+    new THREE.Color(0x9DAF9B),
+    new THREE.Color(0xB8C4CE),
+    new THREE.Color(0xEDE8DF),
   ];
 
-  // Blob geometry — high-res sphere we deform
   const geo = new THREE.SphereGeometry(1.2, 128, 128);
   const posAttr = geo.attributes.position;
-  const origPositions = new Float32Array(posAttr.array.length);
-  origPositions.set(posAttr.array);
+  const orig = new Float32Array(posAttr.array);
 
-  // Shader material with color gradient
-  const mat = new THREE.MeshStandardMaterial({
-    color: colors[0],
-    roughness: 0.35,
-    metalness: 0.1,
-    wireframe: false,
-  });
+  const mat = new THREE.MeshStandardMaterial({ color: colors[0], roughness: 0.35, metalness: 0.1 });
+  scene.add(new THREE.Mesh(geo, mat));
 
-  const mesh = new THREE.Mesh(geo, mat);
-  scene.add(mesh);
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const l1 = new THREE.PointLight(0xF2BFCA, 2, 10); l1.position.set(2,2,2); scene.add(l1);
+  const l2 = new THREE.PointLight(0x9DAF9B, 1.8, 10); l2.position.set(-2,-1,1); scene.add(l2);
+  const l3 = new THREE.PointLight(0xB8C4CE, 1.2, 10); l3.position.set(0,-2,-1); scene.add(l3);
 
-  // Lights
-  const ambLight = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambLight);
+  function noise(x,y,z){ return Math.sin(x*1.5)*Math.cos(y*1.5)*Math.sin(z*1.5)+Math.sin(x*2.8+.5)*Math.cos(z*2.2)+Math.cos(y*3.1+1.2)*Math.sin(x*2.1); }
 
-  const light1 = new THREE.PointLight(0xF2BFCA, 2.5, 10);
-  light1.position.set(2, 2, 2);
-  scene.add(light1);
+  function resize(){ const w=canvas.clientWidth,h=canvas.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+  resize(); window.addEventListener('resize', resize);
 
-  const light2 = new THREE.PointLight(0x9DAF9B, 2, 10);
-  light2.position.set(-2, -1, 1);
-  scene.add(light2);
-
-  const light3 = new THREE.PointLight(0xB8C4CE, 1.5, 10);
-  light3.position.set(0, -2, -1);
-  scene.add(light3);
-
-  // Simple noise function
-  function noise(x, y, z) {
-    return Math.sin(x * 1.5) * Math.cos(y * 1.5) * Math.sin(z * 1.5)
-         + Math.sin(x * 2.8 + 0.5) * Math.cos(z * 2.2)
-         + Math.cos(y * 3.1 + 1.2) * Math.sin(x * 2.1);
-  }
-
-  // Resize handler — mobile: full viewport, desktop: container
-  function isMobile() { return window.innerWidth <= 960; }
-
-  function resize() {
-    let w, h;
-    if (isMobile()) {
-      w = window.innerWidth;
-      h = window.innerHeight;
-      canvas.style.position = 'fixed';
-      canvas.style.top = '0';
-      canvas.style.left = '0';
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      canvas.style.zIndex = '0';
-      canvas.style.pointerEvents = 'none';
-    } else {
-      w = canvas.clientWidth;
-      h = canvas.clientHeight;
-      canvas.style.position = 'absolute';
-      canvas.style.zIndex = '1';
+  let ci=0, ct=0, t=0;
+  const mesh = scene.children[1];
+  function animate(){
+    requestAnimationFrame(animate); t+=0.008;
+    for(let i=0;i<posAttr.count;i++){
+      const ox=orig[i*3],oy=orig[i*3+1],oz=orig[i*3+2];
+      const l=Math.sqrt(ox*ox+oy*oy+oz*oz);
+      const d=noise(ox/l+t*.4,oy/l+t*.3,oz/l+t*.35)*.28;
+      posAttr.setXYZ(i,ox+(ox/l)*d,oy+(oy/l)*d,oz+(oz/l)*d);
     }
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  // On mobile, fade out blob when hero is out of view
-  if (isMobile()) {
-    const heroSection = document.querySelector('.hero');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        canvas.style.opacity = e.isIntersecting ? '1' : '0';
-        canvas.style.transition = 'opacity .6s ease';
-      });
-    }, { threshold: 0.05 });
-    if (heroSection) observer.observe(heroSection);
-  }
-
-  // Color lerp
-  let colorIdx = 0;
-  let colorT = 0;
-
-  let t = 0;
-  function animate() {
-    requestAnimationFrame(animate);
-    t += 0.008;
-
-    // Deform blob
-    for (let i = 0; i < posAttr.count; i++) {
-      const ox = origPositions[i * 3];
-      const oy = origPositions[i * 3 + 1];
-      const oz = origPositions[i * 3 + 2];
-      const len = Math.sqrt(ox*ox + oy*oy + oz*oz);
-      const nx = ox / len;
-      const ny = oy / len;
-      const nz = oz / len;
-      const displacement = noise(nx + t * 0.4, ny + t * 0.3, nz + t * 0.35) * 0.28;
-      posAttr.setXYZ(i, ox + nx * displacement, oy + ny * displacement, oz + nz * displacement);
-    }
-    posAttr.needsUpdate = true;
-    geo.computeVertexNormals();
-
-    // Slow color transition
-    colorT += 0.003;
-    if (colorT >= 1) { colorT = 0; colorIdx = (colorIdx + 1) % colors.length; }
-    const nextIdx = (colorIdx + 1) % colors.length;
-    mat.color.lerpColors(colors[colorIdx], colors[nextIdx], colorT);
-
-    // Slow rotation
-    mesh.rotation.y = t * 0.18;
-    mesh.rotation.x = Math.sin(t * 0.12) * 0.25;
-
-    // Light orbit
-    light1.position.x = Math.sin(t * 0.5) * 2.5;
-    light1.position.y = Math.cos(t * 0.4) * 2;
-    light2.position.x = Math.cos(t * 0.35) * 2;
-    light2.position.z = Math.sin(t * 0.45) * 2;
-
-    renderer.render(scene, camera);
+    posAttr.needsUpdate=true; geo.computeVertexNormals();
+    ct+=0.003; if(ct>=1){ct=0;ci=(ci+1)%colors.length;}
+    mat.color.lerpColors(colors[ci],colors[(ci+1)%colors.length],ct);
+    mesh.rotation.y=t*.18; mesh.rotation.x=Math.sin(t*.12)*.25;
+    l1.position.x=Math.sin(t*.5)*2.5; l1.position.y=Math.cos(t*.4)*2;
+    l2.position.x=Math.cos(t*.35)*2; l2.position.z=Math.sin(t*.45)*2;
+    renderer.render(scene,camera);
   }
   animate();
+})();
+
+// ── MOBILE HERO ANIMATION (Canvas 2D) ───────────────
+(function() {
+  if (window.innerWidth > 960) return;
+  const canvas = document.getElementById('mobile-anim');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0, phase = 0; // phase 0=blob, 1=transitioning, 2=orbs
+  const BLOB_DURATION = 2.5;   // seconds blob is shown
+  const TRANS_DURATION = 2.0;  // seconds of transition
+  let startTime = null;
+
+  // Palette
+  const BLUSH  = {r:242, g:191, b:202};
+  const SAGE   = {r:157, g:175, b:155};
+  const SLATE  = {r:184, g:196, b:206};
+
+  // Orbs state
+  const orbs = [
+    { x:.72, y:.15, r:.55, color: BLUSH,  vx:-.0004, vy:.0003, phase: 0 },
+    { x:.15, y:.78, r:.45, color: SAGE,   vx:.0005,  vy:-.0002, phase: 2.1 },
+    { x:.5,  y:.5,  r:.35, color: SLATE,  vx:-.0003, vy:.0004,  phase: 4.2 },
+  ];
+
+  function resize() {
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W * window.devicePixelRatio;
+    canvas.height = H * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+  resize(); window.addEventListener('resize', resize);
+
+  // Blob morph path using sin waves
+  function drawBlob(cx, cy, radius, t, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    const pts = 80;
+    for (let i = 0; i <= pts; i++) {
+      const angle = (i / pts) * Math.PI * 2;
+      const noise =
+        Math.sin(angle * 2 + t * .8)  * .18 +
+        Math.sin(angle * 3 - t * .6)  * .12 +
+        Math.sin(angle * 5 + t * .4)  * .07;
+      const r = radius * (1 + noise);
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+
+    // Gradient fill
+    const grd = ctx.createRadialGradient(cx - radius*.2, cy - radius*.2, radius*.1, cx, cy, radius*1.3);
+    grd.addColorStop(0,  `rgba(${BLUSH.r},${BLUSH.g},${BLUSH.b},1)`);
+    grd.addColorStop(.45,`rgba(${SAGE.r},${SAGE.g},${SAGE.b},.9)`);
+    grd.addColorStop(.8, `rgba(${SLATE.r},${SLATE.g},${SLATE.b},.7)`);
+    grd.addColorStop(1,  `rgba(17,17,16,0)`);
+    ctx.fillStyle = grd;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawOrb(orb, alpha) {
+    const x = orb.x * W, y = orb.y * H;
+    const r = orb.r * Math.min(W, H);
+    const grd = ctx.createRadialGradient(x, y, 0, x, y, r);
+    grd.addColorStop(0,   `rgba(${orb.color.r},${orb.color.g},${orb.color.b},${.38 * alpha})`);
+    grd.addColorStop(.5,  `rgba(${orb.color.r},${orb.color.g},${orb.color.b},${.18 * alpha})`);
+    grd.addColorStop(1,   `rgba(${orb.color.r},${orb.color.g},${orb.color.b},0)`);
+    ctx.save();
+    ctx.globalAlpha = 1;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI*2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function frame(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = (ts - startTime) / 1000;
+    t += 0.018;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Determine phase
+    let blobAlpha = 1, orbAlpha = 0;
+    if (elapsed < BLOB_DURATION) {
+      // Phase 1: blob only
+      blobAlpha = 1; orbAlpha = 0;
+    } else if (elapsed < BLOB_DURATION + TRANS_DURATION) {
+      // Phase 2: transition — blob shrinks + fades, orbs emerge
+      const p = (elapsed - BLOB_DURATION) / TRANS_DURATION;
+      blobAlpha = 1 - p;
+      orbAlpha = p;
+    } else {
+      // Phase 3: orbs only, gently moving
+      blobAlpha = 0; orbAlpha = 1;
+    }
+
+    // Move orbs
+    orbs.forEach(o => {
+      o.x += Math.sin(t * .3 + o.phase) * .0008;
+      o.y += Math.cos(t * .25 + o.phase) * .0006;
+      o.x = Math.max(.1, Math.min(.9, o.x));
+      o.y = Math.max(.1, Math.min(.9, o.y));
+    });
+
+    // Draw orbs first (behind)
+    if (orbAlpha > 0) orbs.forEach(o => drawOrb(o, orbAlpha));
+
+    // Draw blob
+    if (blobAlpha > 0) {
+      // Blob starts centered, grows slightly during transition
+      const scale = elapsed < BLOB_DURATION ? 1 : 1 + (elapsed - BLOB_DURATION) / TRANS_DURATION * .3;
+      drawBlob(W * .5, H * .42, Math.min(W, H) * .32 * scale, t, blobAlpha);
+    }
+
+    // Overlay gradient for text legibility (always)
+    const grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0,   'rgba(17,17,16,.5)');
+    grad.addColorStop(.35, 'rgba(17,17,16,.15)');
+    grad.addColorStop(.65, 'rgba(17,17,16,.55)');
+    grad.addColorStop(1,   'rgba(17,17,16,.92)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 </script>
 </body>
