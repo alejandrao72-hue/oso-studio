@@ -318,13 +318,9 @@ nav {
 .who-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
 .who-tag { font-size: .6rem; letter-spacing: .08em; background: rgba(17,17,16,.07); padding: .3rem .7rem; border-radius: 2rem; color: var(--mu); }
 
-.who-img { border-radius: 1rem; overflow: hidden; height: 320px; background: rgba(17,17,16,.05); position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; margin-top: 2rem; }
-.who-img-dark { background: #E4EFB5; }
-.who-img img { width: 100%; height: 100%; object-fit: contain; padding: 1.5rem; animation: illustFloat 5s ease-in-out infinite; }
-@keyframes illustFloat {
-  0%,100% { transform: translateY(0) scale(1); }
-  50%      { transform: translateY(-8px) scale(1.01); }
-}
+.who-img { border-radius: 1rem; overflow: hidden; height: 320px; position: relative; margin-top: 2rem; }
+.who-img-dark { background: transparent; }
+.who-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 /* ── FAST / VALUE ────────────────────── */
 .fast { background: var(--ink); padding: 7rem 2.8rem; }
