@@ -318,8 +318,13 @@ nav {
 .who-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
 .who-tag { font-size: .6rem; letter-spacing: .08em; background: rgba(17,17,16,.07); padding: .3rem .7rem; border-radius: 2rem; color: var(--mu); }
 
-.who-img { border-radius: 1rem; overflow: hidden; height: 260px; background: rgba(17,17,16,.08); position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; margin-top: 2rem; }
-.who-img-dark { background: rgba(17,17,16,.12); }
+.who-img { border-radius: 1rem; overflow: hidden; height: 320px; background: rgba(17,17,16,.05); position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .5rem; margin-top: 2rem; }
+.who-img-dark { background: #E4EFB5; }
+.who-img img { width: 100%; height: 100%; object-fit: contain; padding: 1.5rem; animation: illustFloat 5s ease-in-out infinite; }
+@keyframes illustFloat {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-8px) scale(1.01); }
+}
 
 /* ── FAST / VALUE ────────────────────── */
 .fast { background: var(--ink); padding: 7rem 2.8rem; }
@@ -760,8 +765,7 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
     </div>
     <!-- REPLACE: foto negocio tradicional -->
     <div class="who-img who-img-dark rv d2">
-      <svg class="ph-ico" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(237,232,223,.25)" stroke-width=".8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      <span class="ph-txt" style="color:rgba(237,232,223,.2)">[ imagen negocio — reemplazar ]</span>
+      <img src="who-illustration.png" alt="Negocio digital con OSO" loading="lazy">
     </div>
   </div>
 
