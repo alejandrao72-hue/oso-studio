@@ -1122,10 +1122,18 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
       };
 
       try {
+        const params = new URLSearchParams();
+        params.append('name', data.name);
+        params.append('business', data.business);
+        params.append('email', data.email);
+        params.append('whatsapp', data.whatsapp);
+        params.append('service', data.service);
+        params.append('description', data.description);
+
         await fetch('https://hook.us2.make.com/1ql9rejgw2vx6umqa6qohoahwyu9rqlo', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params.toString(),
           mode: 'no-cors'
         });
       } catch(err) {}
