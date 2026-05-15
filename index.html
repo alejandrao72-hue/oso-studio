@@ -1051,8 +1051,8 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
   </div>
   <div class="cta-r" style="justify-content:flex-start;overflow-y:auto;">
     <div class="cta-wm" style="opacity:.04">O</div>
-    <!-- Formulario Formspree -->
-    <form class="cta-form" id="cta-form" action="https://formspree.io/f/xzdoqvqw" method="POST">
+    <!-- Formulario OSO — conectado a Make.com -->
+    <form class="cta-form" id="cta-form" onsubmit="submitOSO(event)">
       <div class="cta-form-title">Cotización <em>gratis</em></div>
 
       <div class="form-row">
@@ -1072,21 +1072,21 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
       </div>
 
       <div class="form-group">
-        <label for="whatsapp">WhatsApp (opcional)</label>
-        <input type="tel" id="whatsapp" name="whatsapp" placeholder="+57 300 000 0000">
+        <label for="whatsapp">WhatsApp</label>
+        <input type="tel" id="whatsapp" name="whatsapp" placeholder="+57 300 000 0000" required>
       </div>
 
       <div class="form-group">
         <label for="servicio">¿Qué necesitas?</label>
         <select id="servicio" name="servicio" required>
           <option value="" disabled selected>Selecciona un servicio</option>
-          <option value="pagina-web">Página web profesional</option>
-          <option value="marca">Marca e identidad visual</option>
-          <option value="validar-idea">Valida tu idea antes de invertir</option>
-          <option value="publicidad">Publicidad digital</option>
-          <option value="rediseno">Mejora tu página que ya existe</option>
-          <option value="analytics">Analytics & datos</option>
-          <option value="no-se">No sé, necesito orientación</option>
+          <option value="Página web profesional">Página web profesional</option>
+          <option value="Marca e identidad visual">Marca e identidad visual</option>
+          <option value="Valida tu idea antes de invertir">Valida tu idea antes de invertir</option>
+          <option value="Publicidad digital para conseguir clientes">Publicidad digital para conseguir clientes</option>
+          <option value="Mejora tu página que ya existe">Mejora tu página que ya existe</option>
+          <option value="Entiende qué pasa en tu página">Entiende qué pasa en tu página</option>
+          <option value="No sé, necesito orientación">No sé, necesito orientación</option>
         </select>
       </div>
 
@@ -1095,19 +1095,45 @@ footer { background: var(--ink); padding: 3.5rem 2.8rem 2.2rem; }
         <textarea id="mensaje" name="mensaje" rows="3" placeholder="¿Qué vendes? ¿Cuál es tu mayor reto digital hoy?"></textarea>
       </div>
 
-      <!-- Formspree hidden fields -->
-      <input type="hidden" name="_subject" value="Nueva cotización desde OSO Studio">
-      <input type="hidden" name="_replyto" id="replyto">
-
-      <button type="submit" class="form-submit">Quiero mi cotización gratis →</button>
+      <button type="submit" class="form-submit" id="form-btn">Quiero mi cotización gratis →</button>
     </form>
 
     <!-- Success message -->
-    <div class="form-success" id="form-success">
+    <div class="form-success" id="form-success" style="display:none;">
       <div class="form-success-icon">✓</div>
-      <p style="color:var(--blush);font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:.5rem">¡Mensaje recibido!</p>
-      <p>Te enviamos tu cotización en menos de 24 horas.<br>Revisa también tu bandeja de spam.</p>
+      <p style="color:var(--blush);font-family:'Playfair Display',serif;font-size:1.2rem;margin-bottom:.5rem">¡Recibido!</p>
+      <p>Te enviamos tu propuesta en menos de 24 horas.<br>Revisa también tu bandeja de spam.</p>
     </div>
+
+    <script>
+    async function submitOSO(e) {
+      e.preventDefault();
+      const btn = document.getElementById('form-btn');
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+
+      const data = {
+        name: document.getElementById('nombre').value,
+        business: document.getElementById('negocio').value,
+        email: document.getElementById('email').value,
+        whatsapp: document.getElementById('whatsapp').value,
+        service: document.getElementById('servicio').value,
+        description: document.getElementById('mensaje').value
+      };
+
+      try {
+        await fetch('https://hook.us2.make.com/1ql9rejgw2vx6umqa6qohoahwyu9rqlo', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          mode: 'no-cors'
+        });
+      } catch(err) {}
+
+      document.getElementById('cta-form').style.display = 'none';
+      document.getElementById('form-success').style.display = 'flex';
+    }
+    </script>
   </div>
 </section>
 
